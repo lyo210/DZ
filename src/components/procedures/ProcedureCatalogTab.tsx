@@ -24,6 +24,24 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const [page, setPage] = useState(1);
+
+  const filteredProcedures = procedures.filter(procedure => {
+    const matchesSearch = procedure.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         procedure.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         procedure.category.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesQuickSearch = !quickSearchQuery || 
+                              procedure.title.toLowerCase().includes(quickSearchQuery.toLowerCase()) ||
+                              procedure.description.toLowerCase().includes(quickSearchQuery.toLowerCase()) ||
+                              procedure.category.toLowerCase().includes(quickSearchQuery.toLowerCase());
+    
+    const matchesType = !selectedType || procedure.type === selectedType;
+    const matchesStatus = !selectedStatus || procedure.status === selectedStatus;
+    const matchesDigitization = !selectedDigitization || procedure.digitization === selectedDigitization;
+    
+    return matchesSearch && matchesQuickSearch && matchesType && matchesStatus && matchesDigitization;
+  });
+
   const pageSize = 10;
   const totalPages = Math.max(1, Math.ceil(filteredProcedures.length / pageSize));
   const paginatedProcedures = filteredProcedures.slice((page - 1) * pageSize, page * pageSize);
@@ -370,23 +388,6 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
       color: "red"
     }
   ];
-
-  const filteredProcedures = procedures.filter(procedure => {
-    const matchesSearch = procedure.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         procedure.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         procedure.category.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesQuickSearch = !quickSearchQuery || 
-                              procedure.title.toLowerCase().includes(quickSearchQuery.toLowerCase()) ||
-                              procedure.description.toLowerCase().includes(quickSearchQuery.toLowerCase()) ||
-                              procedure.category.toLowerCase().includes(quickSearchQuery.toLowerCase());
-    
-    const matchesType = !selectedType || procedure.type === selectedType;
-    const matchesStatus = !selectedStatus || procedure.status === selectedStatus;
-    const matchesDigitization = !selectedDigitization || procedure.digitization === selectedDigitization;
-    
-    return matchesSearch && matchesQuickSearch && matchesType && matchesStatus && matchesDigitization;
-  });
 
   useEffect(() => {
     setPage(1);
