@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,7 +25,7 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 10;
-  const totalPages = Math.ceil(filteredProcedures.length / pageSize);
+  const totalPages = Math.max(1, Math.ceil(filteredProcedures.length / pageSize));
   const paginatedProcedures = filteredProcedures.slice((page - 1) * pageSize, page * pageSize);
 
   const handleTabSearch = (query: string) => {
@@ -388,9 +388,11 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
     return matchesSearch && matchesQuickSearch && matchesType && matchesStatus && matchesDigitization;
   });
 
-  const [page, setPage] = useState(1);
-  const pageSize = 10;
-  const totalPages = Math.ceil(filteredProcedures.length / pageSize);
+  useEffect(() => {
+    setPage(1);
+  }, [filteredProcedures]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProcedures.length / pageSize));
   const paginatedProcedures = filteredProcedures.slice((page - 1) * pageSize, page * pageSize);
 
   const getColorClasses = (color: string) => {
