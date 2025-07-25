@@ -636,9 +636,6 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
                     </div>
                   </div>
                 </div>
-                <Button variant="outline" className="ml-4">
-                  Voir détails
-                </Button>
               </div>
               <div className="flex gap-2 mt-4 justify-end">
                 <Button variant="outline" size="sm">
