@@ -640,6 +640,20 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
                   Voir détails
                 </Button>
               </div>
+              <div className="flex gap-2 mt-4 justify-end">
+                <Button variant="outline" size="sm">
+                  <Eye className="w-4 h-4 mr-1" />
+                  Consulter
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Download className="w-4 h-4 mr-1" />
+                  Télécharger
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Share2 className="w-4 h-4 mr-1" />
+                  Partager
+                </Button>
+              </div>
             </CardContent>
           </Card>
         ))}
