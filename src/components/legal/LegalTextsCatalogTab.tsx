@@ -33,8 +33,6 @@ export function LegalTextsCatalogTab({ onAddLegalText, onOpenApprovalQueue }: Le
   const [currentSort, setCurrentSort] = useState<SortOption>({ field: 'date', direction: 'desc' });
   const [page, setPage] = useState(1);
   const pageSize = 10;
-  const totalPages = Math.max(1, Math.ceil(processedTexts.length / pageSize));
-  const paginatedTexts = processedTexts.slice((page - 1) * pageSize, page * pageSize);
 
   useEffect(() => {
     if (page > totalPages || page < 1 || isNaN(page)) {
