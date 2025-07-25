@@ -52,6 +52,8 @@ export function LegalTextsCatalogTab({ onAddLegalText, onOpenApprovalQueue }: Le
       author: text.author || 'République Algérienne',
       insertionMethod: text.insertionMethod || 'manual',
       popularity: text.views || 0,
+      description: text.description || '',
+      category: text.category || '',
       ...text
     }));
   }, [filteredTexts]);
