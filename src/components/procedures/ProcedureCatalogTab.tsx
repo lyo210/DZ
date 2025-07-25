@@ -392,9 +392,6 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
     setPage(1);
   }, [filteredProcedures]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredProcedures.length / pageSize));
-  const paginatedProcedures = filteredProcedures.slice((page - 1) * pageSize, page * pageSize);
-
   const getColorClasses = (color: string) => {
     const colors = {
       emerald: { bg: "bg-emerald-100", text: "text-emerald-600", button: "bg-emerald-600 hover:bg-emerald-700" },
