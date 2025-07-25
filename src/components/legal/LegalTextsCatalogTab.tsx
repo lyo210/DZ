@@ -31,6 +31,10 @@ export function LegalTextsCatalogTab({ onAddLegalText, onOpenApprovalQueue }: Le
 
   const [currentFilters, setCurrentFilters] = useState<FilterOptions>({});
   const [currentSort, setCurrentSort] = useState<SortOption>({ field: 'date', direction: 'desc' });
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const totalPages = Math.ceil(processedTexts.length / pageSize);
+  const paginatedTexts = processedTexts.slice((page - 1) * pageSize, page * pageSize);
 
   // Convertir les données en format LegalText pour le service de filtrage
   const convertedTexts: LegalText[] = useMemo(() => {
@@ -124,9 +128,24 @@ export function LegalTextsCatalogTab({ onAddLegalText, onOpenApprovalQueue }: Le
         {processedTexts.length === 0 ? (
           <LegalTextsEmptyState />
         ) : (
-          processedTexts.map((text) => (
-            <LegalTextCard key={text.id} text={text} />
-          ))
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {paginatedTexts.map((text) => (
+              <LegalTextCard key={text.id} text={text} />
+            ))}
+          </div>
+        )}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-4 gap-2">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={`px-3 py-1 rounded border ${page === i + 1 ? 'bg-emerald-600 text-white' : 'bg-white text-emerald-600 border-emerald-600'}`}
+                onClick={() => setPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
         )}
       </div>
 
