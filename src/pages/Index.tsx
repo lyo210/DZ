@@ -43,7 +43,6 @@ const Index = () => {
   const handleSectionChange = useCallback((newSection: string) => {
     console.log('Attempting to navigate to section:', newSection);
     if (VALID_SECTIONS.has(newSection)) {
-      setActiveSection(newSection);
       if (newSection === "dashboard") {
         navigate("/", { replace: false });
       } else {
