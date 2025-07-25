@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, FileText, Users, Building, Clock, Star, Filter, SortAsc, Eye, Scale, BookOpen, Heart, Upload, Quote, Search } from 'lucide-react';
+import { Plus, FileText, Users, Building, Clock, Star, Filter, SortAsc, Eye, Scale, BookOpen, Heart, Upload, Quote, Search, Download, Share2 } from 'lucide-react';
 import { TabSearchField } from '@/components/common/TabSearchField';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -752,9 +752,13 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
                         <Eye className="w-4 h-4 mr-1" />
                         Consulter
                       </Button>
-                      <Button size="sm" className="flex-1 bg-emerald-600 hover:bg-emerald-700">
-                        <FileText className="w-4 h-4 mr-1" />
-                        Démarrer
+                      <Button variant="outline" size="sm" className="flex-1">
+                        <Download className="w-4 h-4 mr-1" />
+                        Télécharger
+                      </Button>
+                      <Button variant="outline" size="sm" className="flex-1">
+                        <Share2 className="w-4 h-4 mr-1" />
+                        Partager
                       </Button>
                     </div>
                   </div>
