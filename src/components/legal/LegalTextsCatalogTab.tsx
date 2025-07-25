@@ -37,8 +37,10 @@ export function LegalTextsCatalogTab({ onAddLegalText, onOpenApprovalQueue }: Le
   const paginatedTexts = processedTexts.slice((page - 1) * pageSize, page * pageSize);
 
   useEffect(() => {
-    setPage(1);
-  }, [processedTexts]);
+    if (page > totalPages || page < 1 || isNaN(page)) {
+      setPage(1);
+    }
+  }, [processedTexts, page, totalPages]);
 
   // Convertir les données en format LegalText pour le service de filtrage
   const convertedTexts: LegalText[] = useMemo(() => {
@@ -129,57 +131,18 @@ export function LegalTextsCatalogTab({ onAddLegalText, onOpenApprovalQueue }: Le
 
       {/* Liste des textes juridiques filtrés */}
       <div className="space-y-4">
-        {processedTexts.length === 0 ? (
-          <LegalTextsEmptyState />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {paginatedTexts.map((text) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {paginatedTexts.length === 0 ? (
+            <div className="col-span-2 text-center text-gray-500 py-8">Aucun texte à afficher.</div>
+          ) : (
+            paginatedTexts.map((text) => (
               <LegalTextCard key={text.id} text={text} />
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
         {totalPages > 1 && (
           <div className="flex justify-center mt-4 gap-2">
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i}
-                className={`px-3 py-1 rounded border ${page === i + 1 ? 'bg-emerald-600 text-white' : 'bg-white text-emerald-600 border-emerald-600'}`}
-                onClick={() => setPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Onglets horizontaux pour les nouvelles sections */}
-      <Tabs defaultValue="institutions" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="institutions">Institutions</TabsTrigger>
-          <TabsTrigger value="types">Types de textes juridiques</TabsTrigger>
-          <TabsTrigger value="featured">Textes juridiques en vedette</TabsTrigger>
-          <TabsTrigger value="testimonials">Témoignages récents</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="institutions" className="mt-6">
-          <LegalTextsInstitutions />
-        </TabsContent>
-
-        <TabsContent value="types" className="mt-6">
-          <LegalTextsTypes />
-        </TabsContent>
-
-        <TabsContent value="featured" className="mt-6">
-          <LegalTextsFeatured />
-        </TabsContent>
-
-        <TabsContent value="testimonials" className="mt-6">
-          <LegalTextsTestimonials />
-        </TabsContent>
-      </Tabs>
-
-      <LegalTextsContribute />
-    </div>
-  );
-}
+                className={`

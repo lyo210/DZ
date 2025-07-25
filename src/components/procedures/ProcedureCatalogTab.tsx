@@ -390,8 +390,10 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
   ];
 
   useEffect(() => {
-    setPage(1);
-  }, [filteredProcedures]);
+    if (page > totalPages || page < 1 || isNaN(page)) {
+      setPage(1);
+    }
+  }, [filteredProcedures, page, totalPages]);
 
   const getColorClasses = (color: string) => {
     const colors = {
@@ -609,61 +611,65 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
       {/* Liste des procédures */}
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {paginatedProcedures.map((procedure) => (
-            <Card key={procedure.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{procedure.title}</h3>
-                      <Badge variant="secondary">{procedure.category}</Badge>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm text-gray-600">{procedure.popularity}%</span>
+          {paginatedProcedures.length === 0 ? (
+            <div className="col-span-2 text-center text-gray-500 py-8">Aucune procédure à afficher.</div>
+          ) : (
+            paginatedProcedures.map((procedure) => (
+              <Card key={procedure.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-lg font-semibold text-gray-900">{procedure.title}</h3>
+                        <Badge variant="secondary">{procedure.category}</Badge>
+                        <div className="flex items-center gap-1">
+                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                          <span className="text-sm text-gray-600">{procedure.popularity}%</span>
+                        </div>
+                        <Badge 
+                          variant={
+                            procedure.digitization === 'yes' ? 'default' :
+                            procedure.digitization === 'partially' ? 'secondary' : 'destructive'
+                          }
+                          className="text-xs"
+                        >
+                          {procedure.digitization === 'yes' ? 'Numérisée' : 
+                           procedure.digitization === 'partially' ? 'Partiellement' : 'Non numérisée'}
+                        </Badge>
                       </div>
-                      <Badge 
-                        variant={
-                          procedure.digitization === 'yes' ? 'default' :
-                          procedure.digitization === 'partially' ? 'secondary' : 'destructive'
-                        }
-                        className="text-xs"
-                      >
-                        {procedure.digitization === 'yes' ? 'Numérisée' : 
-                         procedure.digitization === 'partially' ? 'Partiellement' : 'Non numérisée'}
-                      </Badge>
-                    </div>
-                    <p className="text-gray-600 mb-3">{procedure.description}</p>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        <span>Durée: {procedure.duration}</span>
-                      </div>
-                      <div>
-                        Complexité: <Badge variant={
-                          procedure.complexity === 'Faible' ? 'default' :
-                          procedure.complexity === 'Moyenne' ? 'secondary' : 'destructive'
-                        }>{procedure.complexity}</Badge>
+                      <p className="text-gray-600 mb-3">{procedure.description}</p>
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          <span>Durée: {procedure.duration}</span>
+                        </div>
+                        <div>
+                          Complexité: <Badge variant={
+                            procedure.complexity === 'Faible' ? 'default' :
+                            procedure.complexity === 'Moyenne' ? 'secondary' : 'destructive'
+                          }>{procedure.complexity}</Badge>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex gap-2 mt-4 justify-end">
-                  <Button variant="outline" size="sm">
-                    <Eye className="w-4 h-4 mr-1" />
-                    Consulter
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Download className="w-4 h-4 mr-1" />
-                    Télécharger
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Share2 className="w-4 h-4 mr-1" />
-                    Partager
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  <div className="flex gap-2 mt-4 justify-end">
+                    <Button variant="outline" size="sm">
+                      <Eye className="w-4 h-4 mr-1" />
+                      Consulter
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <Download className="w-4 h-4 mr-1" />
+                      Télécharger
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <Share2 className="w-4 h-4 mr-1" />
+                      Partager
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
         {totalPages > 1 && (
           <div className="flex justify-center mt-4 gap-2">
