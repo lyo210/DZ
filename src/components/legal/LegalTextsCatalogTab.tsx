@@ -92,6 +92,16 @@ export function LegalTextsCatalogTab({ onAddLegalText, onOpenApprovalQueue }: Le
     console.log('Tab search:', query);
   };
 
+  // Ajout d'un filtrage robuste avant le rendu :
+  const safeSearchTerm = (searchTerm || '').toLowerCase();
+  const safeProcessedTexts = processedTexts.filter(text =>
+    (text.title?.toLowerCase() || '').includes(safeSearchTerm) ||
+    (text.description?.toLowerCase() || '').includes(safeSearchTerm) ||
+    (text.category?.toLowerCase() || '').includes(safeSearchTerm)
+  );
+  const paginatedTexts = safeProcessedTexts.slice((page - 1) * pageSize, page * pageSize);
+  const totalPages = Math.max(1, Math.ceil(safeProcessedTexts.length / pageSize));
+
   return (
     <div className="space-y-6">
       {/* Nouveau champ de recherche avec reconnaissance vocale */}
