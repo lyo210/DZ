@@ -58,7 +58,7 @@ const mockConflicts: Conflict[] = [
 
 export function DependenciesConflictsAnalysis() {
   const [selectedType, setSelectedType] = useState<'legal' | 'procedure' | ''>('');
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState<Item[]>([]);
   const [analysisResults, setAnalysisResults] = useState<{
@@ -81,20 +81,9 @@ export function DependenciesConflictsAnalysis() {
     setFilteredItems(items);
   };
 
-  const handleItemSelection = (itemId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedItems([...selectedItems, itemId]);
-    } else {
-      setSelectedItems(selectedItems.filter(id => id !== itemId));
-    }
-  };
-
-  const handleStartAnalysis = async () => {
-    if (selectedItems.length < 2) return;
-    
+  const handleItemSelection = (itemId: string) => {
+    setSelectedItem(itemId);
     setIsAnalyzing(true);
-    
-    // Simulation d'analyse
     setTimeout(() => {
       setAnalysisResults({
         dependencies: mockDependencies,
@@ -106,7 +95,7 @@ export function DependenciesConflictsAnalysis() {
 
   const resetAnalysis = () => {
     setSelectedType('');
-    setSelectedItems([]);
+    setSelectedItem(null);
     setSearchQuery('');
     setFilteredItems([]);
     setAnalysisResults(null);
@@ -150,7 +139,7 @@ export function DependenciesConflictsAnalysis() {
             <CardContent>
               <Select value={selectedType} onValueChange={(value: 'legal' | 'procedure') => {
                 setSelectedType(value);
-                setSelectedItems([]);
+                setSelectedItem(null);
                 setSearchQuery('');
                 setFilteredItems([]);
               }}>
@@ -215,10 +204,10 @@ export function DependenciesConflictsAnalysis() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">
-                  3. Sélectionner les éléments à comparer
+                  3. Sélectionner l'élément à comparer
                 </CardTitle>
                 <CardDescription>
-                  Choisissez au moins 2 éléments pour effectuer l'analyse (minimum 2, maximum 5)
+                  Choisissez un seul élément à comparer à tous les autres
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -226,13 +215,15 @@ export function DependenciesConflictsAnalysis() {
                   {(filteredItems.length > 0 ? filteredItems : getCurrentItems()).map((item) => {
                     const TypeIcon = getTypeIcon(item.type);
                     return (
-                      <div key={item.id} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50">
-                        <Checkbox
-                          checked={selectedItems.includes(item.id)}
-                          onCheckedChange={(checked) => 
-                            handleItemSelection(item.id, checked as boolean)
-                          }
-                          disabled={selectedItems.length >= 5 && !selectedItems.includes(item.id)}
+                      <div key={item.id} className={`flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer ${selectedItem === item.id ? 'bg-purple-100 border-purple-400' : ''}`}
+                        onClick={() => handleItemSelection(item.id)}
+                      >
+                        <input
+                          type="radio"
+                          checked={selectedItem === item.id}
+                          onChange={() => handleItemSelection(item.id)}
+                          className="mt-1"
+                          name="unique-selection"
                         />
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
@@ -249,29 +240,12 @@ export function DependenciesConflictsAnalysis() {
                     );
                   })}
                 </div>
-
-                <div className="flex items-center justify-between mt-6 pt-4 border-t">
-                  <span className="text-sm text-gray-600">
-                    {selectedItems.length} élément(s) sélectionné(s)
-                  </span>
-                  <Button
-                    onClick={handleStartAnalysis}
-                    disabled={selectedItems.length < 2 || isAnalyzing}
-                    className="bg-purple-600 hover:bg-purple-700"
-                  >
-                    {isAnalyzing ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Analyse en cours...
-                      </>
-                    ) : (
-                      <>
-                        <GitCompareArrows className="w-4 h-4 mr-2" />
-                        Commencer l'analyse
-                      </>
-                    )}
-                  </Button>
-                </div>
+                {isAnalyzing && (
+                  <div className="flex items-center justify-center mt-4">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600 mr-2"></div>
+                    <span>Analyse en cours...</span>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
